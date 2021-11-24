@@ -15,14 +15,14 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError('User with this email have already taken ')
+            raise serializers.ValidationError('Пользователь с таким мейлом уже существует')
         return email
 
     def validate(self, validated_data):
         password = validated_data.get('password')
         password_confirmation = validated_data.get('password_confirmation')
         if password != password_confirmation:
-            raise serializers.ValidationError("password doesn't match")
+            raise serializers.ValidationError("Пароли не совпадают")
         return validated_data
 
     def create(self, validated_data):
@@ -44,11 +44,11 @@ class LoginSerializer(serializers.Serializer):
             user = authenticate(request=self.context.get('request'), username=email, password=password)
 
             if not user:
-                msg = 'Unable to log in with provided credentials'
+                msg = 'Невозможно войти в систему с предоставленными учетными данными'
                 raise serializers.ValidationError(msg, code='authorization')
 
         else:
-            msg = 'Must include "username" and "password"'
+            msg = 'Должен включать "username" и "password"'
             raise serializers.ValidationError(msg, code='authorization')
 
         attrs['user'] = user

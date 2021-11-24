@@ -17,7 +17,8 @@ class RegistrationView(APIView):
         serializers = RegisterSerializer(data=data)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response('Successfully signed up', status=status.HTTP_201_CREATED)
+            return Response('Вы успешно пошли!', status=status.HTTP_201_CREATED)
+
 
 class ActivationView(APIView):
     def get(self, request, activation_code):
@@ -26,7 +27,7 @@ class ActivationView(APIView):
         user.is_active = True
         user.activation_code = ''
         user.save()
-        return Response('Your account succesfully activated', status=status.HTTP_200_OK)
+        return Response('Ваш аккаунт был успешно активирован', status=status.HTTP_200_OK)
 
 
 class LoginView(ObtainAuthToken):
@@ -39,4 +40,4 @@ class LogoutView(APIView):
     def post(self, request):
         user = request.user
         Token.objects.filter(user=user).delete()
-        return Response('Successfully logged out', status=status.HTTP_200_OK)
+        return Response('Вы успешно вышли из аккаунта', status=status.HTTP_200_OK)
