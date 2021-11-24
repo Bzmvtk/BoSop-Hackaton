@@ -2,7 +2,7 @@ from .models import SomePosts
 from .serializer import PostSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsQuestionAuthor
-from rest_framework import generics, viewsets
+from rest_framework import generics
 
 
 #CRUD for posts
