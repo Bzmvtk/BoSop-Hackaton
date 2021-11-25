@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # modules
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
 
     # custom apps
     'application.account',
@@ -60,7 +61,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'hackaton.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -154,6 +154,9 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination', "PAGE_SIZE": 2, 'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
     ]
 }
 
