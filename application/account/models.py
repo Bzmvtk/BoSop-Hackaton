@@ -46,3 +46,10 @@ class User(AbstractUser):
         md5_object = hashlib.md5(encode_string)
         activation_code = md5_object.hexdigest()
         self.activation_code = activation_code
+
+    def activate_with_code(self, activation_code):
+        if self.activation_code != activation_code:
+            raise Exception('Wrong Activation Code')
+        self.is_active = True
+        self.activation_code = ''
+        self.save()

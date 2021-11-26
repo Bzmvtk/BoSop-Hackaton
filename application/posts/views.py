@@ -8,12 +8,14 @@ from .permissions import IsQuestionAuthor
 from .serializer import PostSerializer
 from .models import SomePosts
 
+
 class PostFilter(django_filters.FilterSet):
     author = django_filters.NumberFilter(field_name='author_id')
 
     class Meta:
         model = SomePosts
         fields = ['author_id', ]
+
 
 #CRUD for posts
 class PostListView(generics.ListAPIView):
