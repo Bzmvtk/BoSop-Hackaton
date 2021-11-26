@@ -6,3 +6,5 @@ Pillow
 psycopg2-binary
 pytz
 sqlparse
+django-decouple
+drf-yasg

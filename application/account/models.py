@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
 from django.db import models
+from hackaton.settings import EMAIL_HOST_USER
 
 
 class UserManager(BaseUserManager):
@@ -46,3 +48,11 @@ class User(AbstractUser):
         md5_object = hashlib.md5(encode_string)
         activation_code = md5_object.hexdigest()
         self.activation_code = activation_code
+
+    def activate_with_code(self, activation_code):
+        if self.activation_code != activation_code:
+            raise Exception('Неверный код, проверь и попробуй снова')
+        self.is_active = True
+        self.activation_code = ''
+        self.save()
+
