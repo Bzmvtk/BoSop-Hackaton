@@ -18,7 +18,7 @@ class RegistrationView(APIView):
         serializers = RegisterSerializer(data=data)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response('Вы успешно пошли!', status=status.HTTP_201_CREATED)
+            return Response('Вы успешно зарегистрировались!', status=status.HTTP_201_CREATED)
 
 
 class ActivationView(APIView):
