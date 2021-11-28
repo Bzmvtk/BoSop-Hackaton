@@ -1,17 +1,25 @@
 from rest_framework import serializers
-from .models import SomePosts
+from .models import SomePosts, Saved
+
+
+class SavedSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Saved
+        fields = '__all__'
 
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = SomePosts
-        fields = ('id', 'title', 'image', 'post')
+        fields = ('id', 'title', 'image', 'post',)
 
     def create(self, validated_data):
         request = self.context.get('request')
         validated_data['author_id'] = request.user.id
         post = SomePosts.objects.create(**validated_data)
         return post
+
 
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:

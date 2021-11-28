@@ -1,12 +1,14 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, filters
+from rest_framework import generics, filters, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 import django_filters
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
-from .permissions import IsQuestionAuthor
-from .serializer import PostSerializer
-from .models import SomePosts
+from .permissions import IsQuestionAuthor, IsPostAuthor
+from .serializer import *
+from .models import SomePosts, Saved
 
 
 class PostFilter(django_filters.FilterSet):
@@ -47,3 +49,36 @@ class PostDeleteView(generics.DestroyAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsQuestionAuthor]
 
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = SomePosts.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated, ]
+
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            permissions = []
+        elif self.action == 'saved':
+            permissions = [IsAuthenticated, ]
+        else:
+            permissions = [IsPostAuthor, ]
+        return [permissions() for permissions in permissions]
+
+
+    @action(detail=True, methods=['POST'])
+    def saved(self, requests, *args, **kwargs):
+        post = self.get_object()
+        saved_obj, _ = Saved.objects.get_or_create(post=post, user=requests.user)
+        saved_obj.saved = not saved_obj.saved
+        saved_obj.save()
+        status = 'Сохранено в избранные'
+        if not saved_obj.saved:
+            status = 'Удалено из избранных'
+        return Response({'status': status})
+
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+class SavedView(generics.ListAPIView):
+    queryset = Saved.objects.all()
+    serializer_class = SavedSerializer

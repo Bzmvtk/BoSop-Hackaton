@@ -1,15 +1,16 @@
-from django.db import router
 from django.urls import path, include
-# from application.posts.views import CategoryView
-from .views import PostListView, PostCreateView, PostUpdateView, PostDeleteView
+from .views import PostListView, PostCreateView, PostUpdateView, PostDeleteView, PostViewSet, SavedView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
+router.register('', PostViewSet)
 
 urlpatterns = [
     path('post-list/', PostListView.as_view()),
     path('post-create/', PostCreateView.as_view()),
     path('post-update/<int:pk>/', PostUpdateView.as_view()),
     path('post-delete/<int:pk>/', PostDeleteView.as_view()),
-    path('', include(router.urls))
+    path('saved-list/', SavedView.as_view()),
+    path('', include(router.urls)),
 ]
+urlpatterns.extend(router.urls)
