@@ -6,7 +6,7 @@ import django_filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .permissions import IsQuestionAuthor, IsPostAuthor
+from .permissions import IsPostAuthor
 from .serializer import *
 from .models import SomePosts, Saved
 
@@ -41,13 +41,13 @@ class PostCreateView(generics.CreateAPIView):
 class PostUpdateView(generics.UpdateAPIView):
     queryset = SomePosts.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, IsQuestionAuthor]
+    permission_classes = [IsAuthenticated, IsPostAuthor]
 
 
 class PostDeleteView(generics.DestroyAPIView):
     queryset = SomePosts.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, IsQuestionAuthor]
+    permission_classes = [IsAuthenticated, IsPostAuthor]
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -82,3 +82,7 @@ class PostViewSet(viewsets.ModelViewSet):
 class SavedView(generics.ListAPIView):
     queryset = Saved.objects.all()
     serializer_class = SavedSerializer
+
+class PostDetailView(generics.RetrieveAPIView):
+    queryset = SomePosts.objects.all()
+    serializer_class = PostDetailSerializer

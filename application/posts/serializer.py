@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import SomePosts, Saved
+from ..comment.serializers import CommentSerializer
 
 
 class SavedSerializer(serializers.ModelSerializer):
@@ -19,6 +20,14 @@ class PostSerializer(serializers.ModelSerializer):
         validated_data['author_id'] = request.user.id
         post = SomePosts.objects.create(**validated_data)
         return post
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        total_rating = [i.rating for i in instance.comment.all()]
+        if len(total_rating) > 0:
+            representation['total_rating'] = sum(total_rating) / len(total_rating)
+        representation['image'] = PostImageSerializer(SomePosts.objects.filter(post=instance.id), many=True, context=self.context).data
+        return representation
 
 
 class PostImageSerializer(serializers.ModelSerializer):
@@ -41,4 +50,21 @@ class PostImageSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         representation['image'] = self._get_image_url(instance)
+        return representation
+
+
+class PostDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SomePosts
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        total_rating = [i.rating for i in instance.comment.all()]
+        if len(total_rating) > 0:
+            representation['total_rating'] = sum(total_rating) / len(total_rating)
+        representation['image'] = PostImageSerializer(SomePosts.objects.filter(post=instance.id), many=True,
+                                                          context=self.context).data
+        representation['comments'] = CommentSerializer(instance.comment.filter(post=instance.id), many=True).data
         return representation

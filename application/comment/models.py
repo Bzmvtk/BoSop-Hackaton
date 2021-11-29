@@ -11,7 +11,7 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='comment')
     post = models.ForeignKey(SomePosts, on_delete=models.CASCADE, related_name='comment')
     comment = models.TextField()
-    rating = models.IntegerField(default=1, validators=[MaxValueValidator(5), MinValueValidator(1)])
+    rating = models.IntegerField(default=5, validators=[MaxValueValidator(5), MinValueValidator(1)], blank=True)
 
     def __str__(self):
         return self.posts.title
